@@ -69,7 +69,8 @@ namespace SampleMaker
             //points[3] = new PointF(bitmap.Width, bitmap.Height * 0.8f);
             //var mat = EmguHelper.WarpAffine(bitmap, points);
 
-            //var bitmap = SealTool.CreateInvoiceSeal("上海测试有限公司", "000000000000000000");
+            var bitmap = SealTool.CreateInvoiceSeal("上海测试有限公司", "000000000000000000");
+            bitmap.Save("seal.png");
 
             //formImageShow.ShowImage(bitmap);
         }
@@ -136,13 +137,20 @@ namespace SampleMaker
             if(cbSampleType.Text == "火车票")
             {
                 maker = new TrainMaker();
+            }
+            else if(cbSampleType.Text == "专票")
+            {
+                maker = new SpecialInvoiceMaker();
+            }
+            if (maker != null)
+            {
                 string msg = maker.Check(items);
-                if(msg != string.Empty)
+                if (msg != string.Empty)
                 {
                     MessageBox.Show(msg);
                     return null;
                 }
-                maker.SetTempate(TemplatePath, items);
+                maker.SetTemplate(TemplatePath, items);
             }
             return maker;
         }

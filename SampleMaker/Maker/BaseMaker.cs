@@ -15,11 +15,39 @@ namespace SampleMaker.Maker
         protected Bitmap template = null;
         protected Random random = new Random(Guid.NewGuid().GetHashCode());
 
-        public abstract Bitmap MakeOne();
+        public virtual Bitmap MakeOne()
+        {
+            var values = getTemplateValues();
+            var texts = values.Item1;
+            var images = values.Item2;
+            Bitmap src = template.Clone() as Bitmap;
+            using (Graphics g = Graphics.FromImage(src))
+            {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+
+                foreach (var entry in templateItems)
+                {
+                    var templateItem = entry.Value;
+                    if (!templateItem.IsImage && texts.ContainsKey(entry.Key))
+                    {
+                        string value = texts[entry.Key];
+                        Bitmap part = WordTool.GetBitmap(value, getColor(templateItem), getFont(templateItem));
+                        g.DrawImage(part, new Point(templateItem.X, templateItem.Y));
+                        part.Dispose();
+                    }
+                    else if (templateItem.IsImage && images.ContainsKey(entry.Key))
+                    {
+                        Bitmap part = images[entry.Key];
+                        drawImage(g, part, templateItem);
+                    }
+                }
+            }
+            return src;
+        }
 
         public abstract string getName();
 
-        public void SetTempate(string templatePath, Dictionary<string, TemplateItem> items)
+        public void SetTemplate(string templatePath, Dictionary<string, TemplateItem> items)
         {
             this.templatePath = templatePath;
             template = Bitmap.FromFile(templatePath) as Bitmap;
@@ -34,6 +62,11 @@ namespace SampleMaker.Maker
                 return "缺少必要项";
             }
             return "";
+        }
+
+        protected DateTime getRandomTimeBefore()
+        {
+            return DateTime.Now.AddMinutes(0 - random.Next(1, 500000));
         }
 
         protected string getRandomNumbers(int len)
@@ -104,6 +137,8 @@ namespace SampleMaker.Maker
         }
 
         protected abstract string[] getNeedKeys();
+
+        protected abstract Tuple<Dictionary<string, string>, Dictionary<string, Bitmap>> getTemplateValues();
 
     }
 }

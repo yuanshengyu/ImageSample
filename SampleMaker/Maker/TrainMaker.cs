@@ -16,62 +16,43 @@ namespace SampleMaker.Maker
             loadStations();
         }
 
-        public override Bitmap MakeOne()
-        {
-            Random random = new Random(Guid.NewGuid().GetHashCode());
-
-            Bitmap src = template.Clone() as Bitmap;
-            Graphics g = Graphics.FromImage(src);
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-
-            string windowNo = getRandomWindowNo();
-            Dictionary<string, string> values = new Dictionary<string, string>();
-            values["RedNo"] = getRedNo(windowNo);
-            values["Check"] = string.Format("{0:D2}", random.Next(1, 20));
-            var fromStations = getRandomStation();
-            values["From1"] = fromStations.Item1;
-            values["From2"] = fromStations.Item2;
-            var toStations = getRandomStation();
-            values["To1"] = toStations.Item1;
-            values["To2"] = toStations.Item2;
-            values["TrainNo"] = getTrainNo();
-            DateTime dt = getRandomTime();
-            values["Year"] = dt.ToString("yyyy");
-            values["Month"] = dt.ToString("MM");
-            values["Day"] = dt.ToString("dd");
-            values["Time"] = dt.ToString("HH:mm");
-            values["CarriageNo"] = string.Format("{0:D2}", random.Next(1, 19));
-            values["SeatNo"] = getRandomSeatNo();
-            values["Price"] = getRandomPrice();
-            values["SeatType"] = getRandomSeatType();
-            values["Person"] = getRandomPerson();
-            values["TicketNo"] = getTicketNo(windowNo);
-            values["Place"] = "沪  售";
-            string qrcode = getRandomQRCode();
-            foreach(var entry in templateItems)
-            {
-                var templateItem = entry.Value;
-                if (!templateItem.IsImage && values.ContainsKey(entry.Key))
-                {
-                    string value = values[entry.Key];
-                    Bitmap part = WordTool.GetBitmap(value, getColor(templateItem), getFont(templateItem));
-                    g.DrawImage(part, new Point(templateItem.X, templateItem.Y));
-                    part.Dispose();
-                }
-            }
-
-            TemplateItem qrcodeItem = templateItems["QRCode"];
-            Bitmap qrcodeImage = QRCodeTool.CreateQRCode(qrcode, 4);
-            drawImage(g, qrcodeImage, qrcodeItem);
-            qrcodeImage.Dispose();
-
-            g.Dispose();
-            return src;
-        }
-
         public override string getName()
         {
             return "train";
+        }
+
+        protected override Tuple<Dictionary<string, string>, Dictionary<string, Bitmap>> getTemplateValues()
+        {
+            string windowNo = getRandomWindowNo();
+            Dictionary<string, string> text = new Dictionary<string, string>();
+            text["RedNo"] = getRedNo(windowNo);
+            text["Check"] = string.Format("{0:D2}", random.Next(1, 20));
+            var fromStations = getRandomStation();
+            text["From1"] = fromStations.Item1;
+            text["From2"] = fromStations.Item2;
+            var toStations = getRandomStation();
+            text["To1"] = toStations.Item1;
+            text["To2"] = toStations.Item2;
+            text["TrainNo"] = getTrainNo();
+            DateTime dt = getRandomTimeBefore();
+            text["Year"] = dt.ToString("yyyy");
+            text["Month"] = dt.ToString("MM");
+            text["Day"] = dt.ToString("dd");
+            text["Time"] = dt.ToString("HH:mm");
+            text["CarriageNo"] = string.Format("{0:D2}", random.Next(1, 19));
+            text["SeatNo"] = getRandomSeatNo();
+            text["Price"] = getRandomPrice();
+            text["SeatType"] = getRandomSeatType();
+            text["Person"] = getRandomPerson();
+            text["TicketNo"] = getTicketNo(windowNo);
+            text["Place"] = "沪  售";
+
+            string qrcode = getRandomQRCode();
+            Bitmap qrcodeImage = QRCodeTool.CreateQRCode(qrcode, 4, Color.Black);
+            Dictionary<string, Bitmap> image = new Dictionary<string, Bitmap>();
+            image["QRCode"] = qrcodeImage;
+
+            return new Tuple<Dictionary<string, string>, Dictionary<string, Bitmap>>(text, image);
         }
 
         protected override string[] getNeedKeys()
@@ -83,9 +64,7 @@ namespace SampleMaker.Maker
 
         private string getTrainNo()
         {
-            string[] types = { "G", "D" };
-            int index = random.Next(0, types.Length);
-            string type = types[index];
+            string type = getRandomItem(new string[] { "G", "D" });
             StringBuilder sb = new StringBuilder(type);
             int len = random.Next(3, 5);
             for (int i = 0; i < len; i++)
@@ -139,8 +118,7 @@ namespace SampleMaker.Maker
         private string getRandomSeatType()
         {
             string[] types = { "商务", "一等", "二等" };
-            int index = random.Next(0, types.Length);
-            return types[index];
+            return getRandomItem(types);
         }
 
         private Tuple<string, string> getRandomStation()
@@ -170,11 +148,6 @@ namespace SampleMaker.Maker
                 sb.Append(random.Next(0, 10).ToString());
             }
             return sb.ToString();
-        }
-
-        private DateTime getRandomTime()
-        {
-            return DateTime.Now.AddMinutes(0 - random.Next(1, 500000));
         }
 
         private string getRandomPerson()
@@ -215,5 +188,6 @@ namespace SampleMaker.Maker
                 }
             }
         }
+
     }
 }

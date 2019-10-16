@@ -10,7 +10,7 @@ namespace SampleMaker.Util
 {
     public static class QRCodeTool
     {
-        public static Bitmap CreateQRCode(string code, int pixel)
+        public static Bitmap CreateQRCode(string code, int pixel, Color darkColor)
         {
             QRCodeGenerator.ECCLevel eccLevel = QRCodeGenerator.ECCLevel.Q;
             using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
@@ -20,7 +20,7 @@ namespace SampleMaker.Util
                     using (QRCode qrCode = new QRCode(qrCodeData))
                     {
 
-                        Bitmap bitmap = qrCode.GetGraphic(pixel, Color.Black, Color.Transparent, false);
+                        Bitmap bitmap = qrCode.GetGraphic(pixel, darkColor, Color.Transparent, false);
                         return bitmap;
                     }
                 }

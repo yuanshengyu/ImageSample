@@ -42,7 +42,7 @@ namespace SampleMaker.Util
                 DrawRotatedText(g, text, angle, tuple.Item1, companyFont, textPen);
             }
             
-            Font taxFont = new Font("Rockwell Condensed", 40, FontStyle.Regular, GraphicsUnit.Pixel);
+            Font taxFont = new Font("Rockwell Condensed", 38, FontStyle.Regular, GraphicsUnit.Pixel);
             var taxSize = g.MeasureString(taxId, taxFont);
             PointF taxPoint = new PointF((INVOICE_SEAL_W - taxSize.Width) / 2, INVOICE_SEAL_H / 2 - taxSize.Height/2+2);
             DrawText(g, taxId, taxPoint, taxFont, textPen);

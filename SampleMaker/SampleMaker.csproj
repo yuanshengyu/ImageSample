@@ -104,10 +104,10 @@
     <Compile Include="FormTemplateItem.Designer.cs">
       <DependentUpon>FormTemplateItem.cs</DependentUpon>
     </Compile>
+    <Compile Include="Maker\BaseInvoiceMaker.cs" />
     <Compile Include="Maker\BaseMaker.cs" />
-    <Compile Include="Maker\BaseSpecialInvoiceMaker.cs" />
-    <Compile Include="Maker\SpecialInvoiceDKMaker.cs" />
-    <Compile Include="Maker\SpecialInvoiceFPMaker.cs" />
+    <Compile Include="Maker\BaseBigInvoiceMaker.cs" />
+    <Compile Include="Maker\SpecialInvoiceMaker.cs" />
     <Compile Include="Sample\BndBox.cs" />
     <Compile Include="Sample\SSDInfo.cs" />
     <Compile Include="Sample\SSDModel.cs" />
