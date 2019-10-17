@@ -205,6 +205,14 @@ namespace SampleMaker
             }
         }
 
+        private void moveAll(int xStep, int yStep)
+        {
+            foreach(var pictureBox in pictureBoxes.Values)
+            {
+                movePictureBox(pictureBox, xStep, yStep);
+            }
+        }
+
         private void movePictureBox(PictureBox pictureBox, int xStep, int yStep)
         {
             if (pictureBox.Left + xStep < 0)
@@ -529,6 +537,26 @@ namespace SampleMaker
                 sb.Append("\"").Append(key).Append("\", ");
             }
             Clipboard.SetDataObject(sb.ToString(), true);
+        }
+
+        private void BtnMoveAllLeft_Click(object sender, EventArgs e)
+        {
+            moveAll(-1, 0);
+        }
+
+        private void BtnMoveAllRight_Click(object sender, EventArgs e)
+        {
+            moveAll(1, 0);
+        }
+
+        private void BtnMoveAllUp_Click(object sender, EventArgs e)
+        {
+            moveAll(-1, 0);
+        }
+
+        private void BtnMoveAllDown_Click(object sender, EventArgs e)
+        {
+            moveAll(1, 0);
         }
 
         private void DeleteToolStripMenuItem_Click(object sender, EventArgs e)

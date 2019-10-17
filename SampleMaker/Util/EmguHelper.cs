@@ -68,6 +68,11 @@ namespace SampleMaker.Util
         {
             int newWidth = (int)Math.Round(src.Width / ratio);
             int newHeight = (int)Math.Round(src.Height / ratio);
+            return Resize(src, newWidth, newHeight);
+        }
+
+        public static Mat Resize(Mat src, int newWidth, int newHeight)
+        {
             Size newSize = new Size(newWidth, newHeight);
             Mat temp = new Mat();
             CvInvoke.Resize(src, temp, newSize, 0, 0, Inter.Area);

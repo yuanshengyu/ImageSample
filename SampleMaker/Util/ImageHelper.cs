@@ -11,6 +11,14 @@ namespace SampleMaker.Util
 {
     public static class ImageHelper
     {
+
+        public static void SaveJPEG(Image image, string path, long quality = 30L)
+        {
+            ImageCodecInfo encoder = ImageCodecInfo.GetImageEncoders().FirstOrDefault(ici => ici.MimeType == "image/jpeg");
+            EncoderParameters encoderParams = new EncoderParameters();
+            encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, quality);
+            image.Save(path, encoder, encoderParams);
+        }
         public static Bitmap ZoomImage(Bitmap bitmap, double ratio)
         {
             System.Drawing.Image sourImage = bitmap;

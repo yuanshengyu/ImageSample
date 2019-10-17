@@ -239,7 +239,7 @@
             this.Controls.Add(this.tbTemplatePath);
             this.Controls.Add(this.label1);
             this.Name = "FormMain";
-            this.Text = "样本生成器";
+            this.Text = "模板样本生成器";
             ((System.ComponentModel.ISupportInitialize)(this.numericSample)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

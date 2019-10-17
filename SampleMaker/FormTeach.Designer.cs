@@ -32,6 +32,11 @@
             this.pictureBoxTemplate = new System.Windows.Forms.PictureBox();
             this.listViewItems = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.EditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CopyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.DeleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CopyAllKeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
             this.tbTemplatePath = new System.Windows.Forms.TextBox();
             this.btnBrowse = new System.Windows.Forms.Button();
@@ -46,16 +51,15 @@
             this.btnAddItem = new System.Windows.Forms.Button();
             this.btnRemoveItem = new System.Windows.Forms.Button();
             this.btnEditItem = new System.Windows.Forms.Button();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.EditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.CopyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.DeleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.CopyAllKeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnMoveAllLeft = new System.Windows.Forms.Button();
+            this.btnMoveAllRight = new System.Windows.Forms.Button();
+            this.btnMoveAllUp = new System.Windows.Forms.Button();
+            this.btnMoveAllDown = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTemplate)).BeginInit();
+            this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericHeight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericY)).BeginInit();
-            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBoxTemplate
@@ -92,6 +96,44 @@
             // 
             this.columnHeader1.Text = "模板项";
             this.columnHeader1.Width = 170;
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.EditToolStripMenuItem,
+            this.CopyToolStripMenuItem,
+            this.DeleteToolStripMenuItem,
+            this.CopyAllKeyToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(146, 92);
+            // 
+            // EditToolStripMenuItem
+            // 
+            this.EditToolStripMenuItem.Name = "EditToolStripMenuItem";
+            this.EditToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.EditToolStripMenuItem.Text = "编辑";
+            this.EditToolStripMenuItem.Click += new System.EventHandler(this.EditToolStripMenuItem_Click);
+            // 
+            // CopyToolStripMenuItem
+            // 
+            this.CopyToolStripMenuItem.Name = "CopyToolStripMenuItem";
+            this.CopyToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.CopyToolStripMenuItem.Text = "复制";
+            this.CopyToolStripMenuItem.Click += new System.EventHandler(this.CopyToolStripMenuItem_Click);
+            // 
+            // DeleteToolStripMenuItem
+            // 
+            this.DeleteToolStripMenuItem.Name = "DeleteToolStripMenuItem";
+            this.DeleteToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.DeleteToolStripMenuItem.Text = "删除";
+            this.DeleteToolStripMenuItem.Click += new System.EventHandler(this.DeleteToolStripMenuItem_Click);
+            // 
+            // CopyAllKeyToolStripMenuItem
+            // 
+            this.CopyAllKeyToolStripMenuItem.Name = "CopyAllKeyToolStripMenuItem";
+            this.CopyAllKeyToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.CopyAllKeyToolStripMenuItem.Text = "复制所有Key";
+            this.CopyAllKeyToolStripMenuItem.Click += new System.EventHandler(this.CopyAllKeyToolStripMenuItem_Click);
             // 
             // label1
             // 
@@ -234,49 +276,55 @@
             this.btnEditItem.UseVisualStyleBackColor = true;
             this.btnEditItem.Click += new System.EventHandler(this.BtnEditItem_Click);
             // 
-            // contextMenuStrip1
+            // btnMoveAllLeft
             // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.EditToolStripMenuItem,
-            this.CopyToolStripMenuItem,
-            this.DeleteToolStripMenuItem,
-            this.CopyAllKeyToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 114);
+            this.btnMoveAllLeft.Location = new System.Drawing.Point(347, 39);
+            this.btnMoveAllLeft.Name = "btnMoveAllLeft";
+            this.btnMoveAllLeft.Size = new System.Drawing.Size(75, 23);
+            this.btnMoveAllLeft.TabIndex = 9;
+            this.btnMoveAllLeft.Text = "整体左移";
+            this.btnMoveAllLeft.UseVisualStyleBackColor = true;
+            this.btnMoveAllLeft.Click += new System.EventHandler(this.BtnMoveAllLeft_Click);
             // 
-            // EditToolStripMenuItem
+            // btnMoveAllRight
             // 
-            this.EditToolStripMenuItem.Name = "EditToolStripMenuItem";
-            this.EditToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.EditToolStripMenuItem.Text = "编辑";
-            this.EditToolStripMenuItem.Click += new System.EventHandler(this.EditToolStripMenuItem_Click);
+            this.btnMoveAllRight.Location = new System.Drawing.Point(428, 39);
+            this.btnMoveAllRight.Name = "btnMoveAllRight";
+            this.btnMoveAllRight.Size = new System.Drawing.Size(75, 23);
+            this.btnMoveAllRight.TabIndex = 9;
+            this.btnMoveAllRight.Text = "整体右移";
+            this.btnMoveAllRight.UseVisualStyleBackColor = true;
+            this.btnMoveAllRight.Click += new System.EventHandler(this.BtnMoveAllRight_Click);
             // 
-            // CopyToolStripMenuItem
+            // btnMoveAllUp
             // 
-            this.CopyToolStripMenuItem.Name = "CopyToolStripMenuItem";
-            this.CopyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.CopyToolStripMenuItem.Text = "复制";
-            this.CopyToolStripMenuItem.Click += new System.EventHandler(this.CopyToolStripMenuItem_Click);
+            this.btnMoveAllUp.Location = new System.Drawing.Point(347, 69);
+            this.btnMoveAllUp.Name = "btnMoveAllUp";
+            this.btnMoveAllUp.Size = new System.Drawing.Size(75, 23);
+            this.btnMoveAllUp.TabIndex = 9;
+            this.btnMoveAllUp.Text = "整体上移";
+            this.btnMoveAllUp.UseVisualStyleBackColor = true;
+            this.btnMoveAllUp.Click += new System.EventHandler(this.BtnMoveAllUp_Click);
             // 
-            // DeleteToolStripMenuItem
+            // btnMoveAllDown
             // 
-            this.DeleteToolStripMenuItem.Name = "DeleteToolStripMenuItem";
-            this.DeleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.DeleteToolStripMenuItem.Text = "删除";
-            this.DeleteToolStripMenuItem.Click += new System.EventHandler(this.DeleteToolStripMenuItem_Click);
-            // 
-            // CopyAllKeyToolStripMenuItem
-            // 
-            this.CopyAllKeyToolStripMenuItem.Name = "CopyAllKeyToolStripMenuItem";
-            this.CopyAllKeyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.CopyAllKeyToolStripMenuItem.Text = "复制所有Key";
-            this.CopyAllKeyToolStripMenuItem.Click += new System.EventHandler(this.CopyAllKeyToolStripMenuItem_Click);
+            this.btnMoveAllDown.Location = new System.Drawing.Point(428, 67);
+            this.btnMoveAllDown.Name = "btnMoveAllDown";
+            this.btnMoveAllDown.Size = new System.Drawing.Size(75, 23);
+            this.btnMoveAllDown.TabIndex = 9;
+            this.btnMoveAllDown.Text = "整体下移";
+            this.btnMoveAllDown.UseVisualStyleBackColor = true;
+            this.btnMoveAllDown.Click += new System.EventHandler(this.BtnMoveAllDown_Click);
             // 
             // FormTeach
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(898, 593);
+            this.Controls.Add(this.btnMoveAllDown);
+            this.Controls.Add(this.btnMoveAllUp);
+            this.Controls.Add(this.btnMoveAllRight);
+            this.Controls.Add(this.btnMoveAllLeft);
             this.Controls.Add(this.btnRemoveItem);
             this.Controls.Add(this.btnEditItem);
             this.Controls.Add(this.btnAddItem);
@@ -297,10 +345,10 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormTeach_KeyDown);
             this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.FormTeach_PreviewKeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTemplate)).EndInit();
+            this.contextMenuStrip1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numericHeight)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericY)).EndInit();
-            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -330,6 +378,10 @@
         private System.Windows.Forms.ToolStripMenuItem CopyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem DeleteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem CopyAllKeyToolStripMenuItem;
+        private System.Windows.Forms.Button btnMoveAllLeft;
+        private System.Windows.Forms.Button btnMoveAllRight;
+        private System.Windows.Forms.Button btnMoveAllUp;
+        private System.Windows.Forms.Button btnMoveAllDown;
     }
 }
 

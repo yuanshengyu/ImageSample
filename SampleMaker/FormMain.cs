@@ -12,6 +12,7 @@ using SampleMaker.Maker;
 using Newtonsoft.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Drawing.Imaging;
 
 namespace SampleMaker
 {
@@ -69,15 +70,47 @@ namespace SampleMaker
             //points[3] = new PointF(bitmap.Width, bitmap.Height * 0.8f);
             //var mat = EmguHelper.WarpAffine(bitmap, points);
 
-            var bitmap = SealTool.CreateInvoiceSeal("上海测试有限公司", "000000000000000000");
-            bitmap.Save("seal.png");
+            //var bitmap = SealTool.CreateInvoiceSeal("上海测试有限公司", "000000000000000000");
 
             //formImageShow.ShowImage(bitmap);
+
+            //string[] files = Directory.GetFiles(@"E:\pytorch_images\sce");
+            //int count = 1;
+
+            //foreach(var file in files)
+            //{
+            //    if (!file.EndsWith("jpg"))
+            //    {
+            //        File.Delete(file);
+            //        continue;
+            //    }
+            //    Bitmap bitmap = Bitmap.FromFile(file) as Bitmap;
+            //    if(Math.Min(bitmap.Width, bitmap.Height) > 700)
+            //    {
+            //        double ratio = Math.Min(bitmap.Width, bitmap.Height) / 660f;
+            //        var temp = ImageHelper.ZoomImage(bitmap, ratio);
+            //        bitmap.Dispose();
+            //        bitmap = temp;
+            //    }
+            //    ImageHelper.SaveJPEG(bitmap, Path.Combine(@"E:\pytorch_images\sce", $"sce_{count++:D6}.jpg"), 50L);
+            //    bitmap.Dispose();
+            //    File.Delete(file);
+                
+            //}
+
         }
 
         private void start(BaseMaker maker)
         {
-            
+            int index = 1;
+            string[] files = Directory.GetFiles(targetRoot);
+            if (files.Length > 0)
+            {
+                List<string> names = files.Select(file => Path.GetFileNameWithoutExtension(file)).OrderByDescending(x => x).ToList();
+                string temp = names[0].Substring(names[0].LastIndexOf('_') + 1);
+                index = int.Parse(temp) + 1;
+            }
+
             int count = 0;
             runFlag = true;
             Task.Run(() =>
@@ -88,7 +121,7 @@ namespace SampleMaker
                     {
                         using (Bitmap bitmap = maker.MakeOne())
                         {
-                            string path = Path.Combine(targetRoot, string.Format("{0}_{1:D8}.jpg", maker.getName(), count + 1));
+                            string path = Path.Combine(targetRoot, string.Format("{0}_{1:D6}.jpg", maker.getName(), index++));
                             bitmap.Save(path);
                         }
                         showProgress(++count);

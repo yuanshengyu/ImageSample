@@ -167,9 +167,6 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="back.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="city.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

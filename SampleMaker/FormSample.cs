@@ -18,39 +18,59 @@ namespace SampleMaker
     public partial class FormSample : Form
     {
         private string[] backImages = new string[0];
-        private int backIndex = -1;
-        private Bitmap defaultBack = Bitmap.FromFile("back.jpg") as Bitmap;
-
+        private int backIndex = 0;
         private string[] sampleImages = new string[0];
         private int sampleIndex = 0;
-
+        private volatile bool ssdFlag = false;
         private FormImageShow formImageShow = new FormImageShow();
 
-        private volatile bool ssdFlag = false;
+        private bool rotateEnabled = true, perspectiveEnabled = true;
+        private int minNum = 0, maxNum = 6;
 
         public FormSample()
         {
             InitializeComponent();
-            tbSampleDir.Text = @"E:\pytorch_images\train";
-            tbDstDir.Text = @"E:\pytorch_images\ssd\train1";
+            tbSampleDir.Text = @"E:\pytorch_images\sample_mix";
+            tbDstDir.Text = @"E:\pytorch_images\ssd\train2";
+        }
+
+        private void setParameters()
+        {
+            rotateEnabled = cbRotate.Checked;
+            perspectiveEnabled = cbPerspective.Checked;
+
+            minNum = (int)numericMinNum.Value;
+            maxNum = (int)numericMaxNum.Value;
         }
 
         private void loadBackImages()
         {
-            backImages = Directory.GetFiles("SSDBackImages");
+            List<string> images = new List<string>();
+            if (cbBackColor.Checked)
+            {
+                string[] files = Directory.GetFiles("back_color");
+                images.AddRange(files);
+            }
+            if (cbBackWhite.Checked)
+            {
+                string[] files = Directory.GetFiles("back_white");
+                images.AddRange(files);
+            }
+            backImages = images.ToArray();
             CommonTool.Shuffle(backImages);
-            backIndex = backImages.Length > 0 ? 0 : -1;
+            backIndex = 0;
         }
 
         private void loadSampleImages()
         {
             sampleImages = Directory.GetFiles(tbSampleDir.Text);
+            CommonTool.Shuffle(sampleImages);
             sampleIndex = 0;
         }
 
         private Mat getNextBackImage()
         {
-            if(backIndex == -1)
+            if(backImages.Length == 0)
             {
                 return null;
             }
@@ -139,7 +159,7 @@ namespace SampleMaker
             Random random = new Random(Guid.NewGuid().GetHashCode());
             
             // 是否添加背景
-            if (random.Next(0, 10) == -1)
+            if (backImages.Length == 0 || random.Next(0, 10) == 0)
             {
                 var sample = getNextSample();
                 var sampleImage = sample.Item1;
@@ -165,30 +185,46 @@ namespace SampleMaker
             else
             {
                 Mat back = getNextBackImage();
-                if (back == null)
+                double backResizeRatio = random.Next(105, 130) / 100f;
+                if(random.Next(0, 2) == 0) // 拉伸Width
                 {
-                    back = CvInvoke.Imread("back.jpg");
+                    var temp = EmguHelper.Resize(back, (int)(back.Width * backResizeRatio), back.Height);
+                    back.Dispose();
+                    back = temp;
                 }
-                float len = random.Next(800, 1500);
+                else
+                {
+                    var temp = EmguHelper.Resize(back, Width, (int)(back.Height * backResizeRatio));
+                    back.Dispose();
+                    back = temp;
+                }
+
+
+                float len = random.Next(1200, 1500);
                 float zoomRatio = Math.Min(back.Width, back.Height) / len;
-                var tempBack = EmguHelper.Resize(back, zoomRatio);
+                var tempBack = EmguHelper.Resize(back, zoomRatio); // 先增大背景图片，最后再缩小
                 back.Dispose();
 
-                int maxNum = random.Next(1, 6) ;
+                int maxNum = random.Next(minNum, this.maxNum) ;
                 List<Rectangle> parts = new List<Rectangle>();
-                int x = 10, y = 10;
+                int x = 50, y = 50;
                 while (--maxNum>=0)
                 {
                     GC.Collect();
                     var sample = getNextSample();
                     var sampleImage = sample.Item1;
-                    if (random.Next(0, 10) < 3) // 仿射变换概率30%
+                    float sampleZoomRatio = Math.Min(sampleImage.Width, sampleImage.Height) / 500f;
+                    var tempSampleImage = ImageHelper.ZoomImage(sampleImage, sampleZoomRatio);
+                    sampleImage.Dispose();
+                    sampleImage = tempSampleImage;
+
+                    if (perspectiveEnabled && random.Next(0, 10) < 3) // 仿射变换概率30%
                     {
                         var temp = warpAffine(sampleImage);
                         sampleImage.Dispose();
                         sampleImage = temp;
                     }
-                    if (random.Next(0, 10) < 3) // 旋转概率30%
+                    if (rotateEnabled && random.Next(0, 10) < 3) // 旋转概率30%
                     {
                         var temp = ImageHelper.Rotate(sampleImage, random.Next(-180, 180), Color.Transparent);
                         sampleImage.Dispose();
@@ -238,18 +274,18 @@ namespace SampleMaker
             Random random = new Random(Guid.NewGuid().GetHashCode());
             while (true)
             {
-                if(x+partSize.Width + 15>= srcSize.Width)
+                if(x+partSize.Width + 100>= srcSize.Width)
                 {
-                    x = 0;
-                    if (y + partSize.Height + 15 >= srcSize.Height)
+                    x = 50;
+                    if (y + partSize.Height + 100 >= srcSize.Height)
                     {
                         break;
                     }
-                    y += random.Next(10, srcSize.Height - partSize.Height - y);
+                    y += random.Next(50, srcSize.Height - partSize.Height - y);
                 }
                 else
                 {
-                    x += random.Next(10, srcSize.Width - partSize.Width - x);
+                    x += random.Next(50, srcSize.Width - partSize.Width - x);
                 }
                 Rectangle rect = new Rectangle(x, y, partSize.Width, partSize.Height);
                 if (!parts.Any(p => p.IntersectsWith(rect)))
@@ -340,7 +376,6 @@ namespace SampleMaker
             return dst;
         }
 
-
         private void showInfo(string info, bool append = true)
         {
             var action = new Action(() =>
@@ -402,7 +437,7 @@ namespace SampleMaker
 
         private void BtnSSD_Click(object sender, EventArgs e)
         {
-            if(btnSSD.Text == "SSD样本")
+            if(btnSSD.Text == "生成SSD样本")
             {
                 if (!Directory.Exists(tbSampleDir.Text))
                 {
@@ -414,6 +449,7 @@ namespace SampleMaker
                     MessageBox.Show("目标文件夹不存在");
                     return;
                 }
+                setParameters();
                 loadBackImages();
                 loadSampleImages();
 
@@ -428,7 +464,44 @@ namespace SampleMaker
             else
             {
                 ssdFlag = false;
-                btnSSD.Text = "SSD样本";
+                btnSSD.Text = "生成SSD样本";
+            }
+        }
+
+        private void BtnRenameToSCE_Click(object sender, EventArgs e)
+        {
+            string dir = tbSampleDir.Text;
+            if (!Directory.Exists(dir))
+            {
+                MessageBox.Show("样本文件夹不存在");
+                return;
+            }
+            if (MessageBox.Show("确定将所有文件重命名为sce_xxxxxx.jpg格式？", "确认", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                try
+                {
+                    string[] files = Directory.GetFiles(dir);
+                    // 先重命名为guid.jpg
+                    foreach(var file in files)
+                    {
+                        FileInfo fileInfo = new FileInfo(file);
+                        fileInfo.MoveTo(Path.Combine(dir, $"{Guid.NewGuid()}.jpg"));
+                    }
+
+                    files = Directory.GetFiles(dir);
+                    // 再重命名为sce.jpg
+                    int count = 1;
+                    foreach (var file in files)
+                    {
+                        FileInfo fileInfo = new FileInfo(file);
+                        fileInfo.MoveTo(Path.Combine(dir, $"sce_{count++:D6}.jpg"));
+                    }
+                    showInfo("重命名完毕");
+                }
+                catch (Exception ex)
+                {
+                    showInfo(ex.Message);
+                }
             }
         }
 
