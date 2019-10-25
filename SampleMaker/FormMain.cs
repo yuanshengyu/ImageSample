@@ -13,6 +13,8 @@ using Newtonsoft.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Drawing.Imaging;
+using Emgu.CV;
+using Emgu.CV.CvEnum;
 
 namespace SampleMaker
 {
@@ -62,42 +64,20 @@ namespace SampleMaker
             //Bitmap bitmap = QRCodeTool.CreateQRCode("010572491393415088940081299896345173232157648345951266835886597081684566420484023943247082755378267424233867319862829180726275060579536369100982", 4);
             //bitmap = ImageHelper.Rotate(bitmap, -30, Color.Transparent);
 
-
-            //PointF[] points = new PointF[4];
-            //points[0] = new PointF(0, 0);
-            //points[1] = new PointF(bitmap.Width, bitmap.Height * 0.2f);
-            //points[2] = new PointF(0, bitmap.Height);
-            //points[3] = new PointF(bitmap.Width, bitmap.Height * 0.8f);
-            //var mat = EmguHelper.WarpAffine(bitmap, points);
-
-            //var bitmap = SealTool.CreateInvoiceSeal("上海测试有限公司", "000000000000000000");
-
-            //formImageShow.ShowImage(bitmap);
-
-            //string[] files = Directory.GetFiles(@"E:\pytorch_images\sce");
-            //int count = 1;
-
-            //foreach(var file in files)
-            //{
-            //    if (!file.EndsWith("jpg"))
-            //    {
-            //        File.Delete(file);
-            //        continue;
-            //    }
-            //    Bitmap bitmap = Bitmap.FromFile(file) as Bitmap;
-            //    if(Math.Min(bitmap.Width, bitmap.Height) > 700)
-            //    {
-            //        double ratio = Math.Min(bitmap.Width, bitmap.Height) / 660f;
-            //        var temp = ImageHelper.ZoomImage(bitmap, ratio);
-            //        bitmap.Dispose();
-            //        bitmap = temp;
-            //    }
-            //    ImageHelper.SaveJPEG(bitmap, Path.Combine(@"E:\pytorch_images\sce", $"sce_{count++:D6}.jpg"), 50L);
-            //    bitmap.Dispose();
-            //    File.Delete(file);
-                
-            //}
-
+            Mat dst = CvInvoke.Imread("e:\\dst.png");
+            Mat src = CvInvoke.Imread("E:\\src2.png");
+            Mat mask = Mat.Ones(src.Rows, src.Cols, src.Depth, src.NumberOfChannels) * 500;
+            Point center = new Point(dst.Width / 2, dst.Height / 2);
+            Mat result1 = new Mat();
+            CvInvoke.SeamlessClone(src, dst, mask, center, result1, CloningMethod.Normal);
+            Mat result2 = new Mat();
+            CvInvoke.SeamlessClone(src, dst, mask, center, result2, CloningMethod.Mixed);
+            Mat result3 = new Mat();
+            CvInvoke.SeamlessClone(src, dst, mask, center, result3, CloningMethod.MonochromeTransfer);
+            CvInvoke.Imshow("Normal", result1);
+            CvInvoke.Imshow("Mixed", result2);
+            CvInvoke.Imshow("MonochromeTransfer", result3);
+            CvInvoke.WaitKey();
         }
 
         private void start(BaseMaker maker)

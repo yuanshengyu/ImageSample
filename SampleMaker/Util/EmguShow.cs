@@ -27,6 +27,23 @@ namespace SampleMaker.Util
             CvInvoke.WaitKey(0);
         }
 
+        public static void Image(Mat image1, string name1, Mat image2, string name2)
+        {
+            if (!ShowEnabled || !IsDebug())
+                return;
+            if (!names.Contains(name1))
+            {
+                CvInvoke.NamedWindow(name1, Emgu.CV.CvEnum.NamedWindowType.Normal);
+            }
+            if (!names.Contains(name2))
+            {
+                CvInvoke.NamedWindow(name2, Emgu.CV.CvEnum.NamedWindowType.Normal);
+            }
+            CvInvoke.Imshow(name1, image1);
+            CvInvoke.Imshow(name2, image2);
+            CvInvoke.WaitKey(0);
+        }
+
         private static bool IsDebug()
         {
 #if DEBUG
