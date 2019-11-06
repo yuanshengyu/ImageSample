@@ -2,27 +2,54 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace SampleMaker.Util
 {
     public static class NameTool
     {
         private static Encoding gb2312 = Encoding.GetEncoding("GB2312");
+        private static string[] names = new string[0];
 
-        public static string GetRandomName(bool commonFlag = false)
+        static NameTool()
+        {
+            try
+            {
+                string json = File.ReadAllText("files\\name.json");
+                var temp = JsonConvert.DeserializeObject<List<string>>(json);
+                names = temp.ToArray();
+            }
+            catch (Exception ex) { }
+        }
+
+        public static string GetRandomName(Random random)
+        {
+            if (names.Length == 0)
+            {
+                return null;
+            }
+            int index = random.Next(0, names.Length);
+            return names[index];
+        }
+
+        public static string GetRandomName(bool commonFlag = false, Random random = null)
         {
             //姓
             string surname = GetSurname(commonFlag);
             //调用函数产生4个随机中文汉字编码
-            Random random = new Random(Guid.NewGuid().GetHashCode());
-            string name = GetRandomWord(random.Next(1, 3));
+            if (random == null)
+            {
+                random = getRandom();
+            }
+            string name = GetRandomWord(random.Next(1, 3), random);
             return surname + name;
         }
 
-        public static string GetRandomWord(int len)
+        public static string GetRandomWord(int len, Random random = null)
         {
-            object[] bytes = CreateRegionCode(len);
+            object[] bytes = CreateRegionCode(len, random);
             //根据汉字编码的字节数组解码出中文汉字
             string name = string.Empty;
             for (int i = 0; i < bytes.Length; i++)
@@ -32,11 +59,14 @@ namespace SampleMaker.Util
             return name;
         }
 
-        public static object[] CreateRegionCode(int strlength)
+        public static object[] CreateRegionCode(int strlength, Random random = null)
         {
             //定义一个字符串数组储存汉字编码的组成元素
             string[] rBase = new String[16] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f" };
-            Random random = new Random(Guid.NewGuid().GetHashCode());
+            if(random == null)
+            {
+                random = getRandom();
+            }
             //定义一个object数组用来
             object[] bytes = new object[strlength];
             /*每循环一次产生一个含两个元素的十六进制字节数组，并将其放入bject数组中
@@ -107,6 +137,12 @@ namespace SampleMaker.Util
             }
         }
 
+        private static Random getRandom()
+        {
+            Random random = new Random(Guid.NewGuid().GetHashCode() * DateTime.Now.Millisecond);
+            return random;
+        }
+
         public static List<string> surname = new List<string>() {"赵", "钱", "孙", "李", "周", "吴", "郑", "王", "冯", "陈", "楮", "卫", "蒋", "沈", "韩", "杨",
   "朱", "秦", "尤", "许", "何", "吕", "施", "张", "孔", "曹", "严", "华", "金", "魏", "陶", "姜",
   "戚", "谢", "邹", "喻", "柏", "水", "窦", "章", "云", "苏", "潘", "葛", "奚", "范", "彭", "郎",
@@ -150,5 +186,6 @@ namespace SampleMaker.Util
             "樊", "胡", "霍", "丁", "邓", "崔", "龚", "裴", "陆", "仇", "甘", "刘", "叶",
             "习", "聂", "岳", "佟", "司马", "上官", "欧阳", "夏侯", "诸葛", "赫连", "皇甫",
             "申屠", "公孙", "轩辕", "令狐", "长孙", "慕容", "司徒", "拓拔", "东郭", "西门", "南宫"};
+
     }
 }

@@ -177,7 +177,9 @@
             this.cbSampleType.Items.AddRange(new object[] {
             "火车票",
             "专票",
-            "普票"});
+            "普票",
+            "身份证-人像",
+            "卷票"});
             this.cbSampleType.Location = new System.Drawing.Point(88, 18);
             this.cbSampleType.Name = "cbSampleType";
             this.cbSampleType.Size = new System.Drawing.Size(121, 20);

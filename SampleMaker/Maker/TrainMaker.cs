@@ -23,8 +23,8 @@ namespace SampleMaker.Maker
 
         protected override Tuple<Dictionary<string, string>, Dictionary<string, Bitmap>> getTemplateValues()
         {
-            string windowNo = getRandomWindowNo();
             Dictionary<string, string> text = new Dictionary<string, string>();
+            string windowNo = getRandomWindowNo();
             text["RedNo"] = getRedNo(windowNo);
             text["Check"] = string.Format("{0:D2}", random.Next(1, 20));
             var fromStations = getRandomStation();
@@ -155,7 +155,7 @@ namespace SampleMaker.Maker
             string provinceId = random.Next(11, 66).ToString();
             string addressId = string.Format("{0}{1:D2}{2:D2}", provinceId, random.Next(1, 20), random.Next(1, 30));
             DateTime dt = DateTime.Now.AddYears(0-random.Next(18, 68));
-            string name = NameTool.GetRandomName(true);
+            string name = NameTool.GetRandomName(true, random);
 
             char[] chars = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'X' };
             StringBuilder sb = new StringBuilder(4);

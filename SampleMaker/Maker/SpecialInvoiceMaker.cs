@@ -21,10 +21,10 @@ namespace SampleMaker.Maker
             string invoiceCode = getInvoiceCode();
             string invoiceNo = getInvoiceNo(8);
             DateTime invoiceDate = getRandomTimeBefore();
-            string p_taxId = getTaxId();
+            string p_taxId = getTaxNo();
             string s_name = getCompanyName(8, 11);
-            string s_taxId = getSimpleTaxId();
-            
+            string s_taxId = getSimpleTaxNo();
+
             var detailItems = getDetailItems(random.Next(1, 6));
             double totalAmount = detailItems.Sum(d => d.Amount);
             double totalTax = detailItems.Sum(d => d.Tax);
@@ -48,50 +48,14 @@ namespace SampleMaker.Maker
             text["Cipher2"] = getCipher(cipherLen);
             text["Cipher3"] = getCipher(cipherLen);
             text["Cipher4"] = getCipher(cipherLen);
-            if (detailItems.Count > 0)
+            for (int i = 1; i < detailItems.Count + 1; i++)
             {
-                text["D_Name1"] = detailItems[0].Name;
-                text["D_Price1"] = detailItems[0].Price.ToString("F2");
-                text["D_Num1"] = detailItems[0].Number.ToString();
-                text["D_Amount1"] = detailItems[0].Amount.ToString("F2");
-                text["D_TaxRate1"] = detailItems[0].TaxRate == 0 ? "*" : string.Format("{0:F0}%", detailItems[0].TaxRate * 100);
-                text["D_Tax1"] = detailItems[0].Tax.ToString("F2");
-            }
-            if (detailItems.Count > 1)
-            {
-                text["D_Name2"] = detailItems[1].Name;
-                text["D_Price2"] = detailItems[1].Price.ToString("F2");
-                text["D_Num2"] = detailItems[1].Number.ToString();
-                text["D_Amount2"] = detailItems[1].Amount.ToString("F2");
-                text["D_TaxRate2"] = detailItems[0].TaxRate == 0 ? "*" : string.Format("{0:F0}%", detailItems[1].TaxRate * 100);
-                text["D_Tax2"] = detailItems[1].Tax.ToString("F2");
-            }
-            if (detailItems.Count > 2)
-            {
-                text["D_Name3"] = detailItems[2].Name;
-                text["D_Price3"] = detailItems[2].Price.ToString("F2");
-                text["D_Num3"] = detailItems[2].Number.ToString();
-                text["D_Amount3"] = detailItems[2].Amount.ToString("F2");
-                text["D_TaxRate3"] = detailItems[0].TaxRate == 0 ? "*" : string.Format("{0:F0}%", detailItems[2].TaxRate * 100);
-                text["D_Tax3"] = detailItems[2].Tax.ToString("F2");
-            }
-            if (detailItems.Count > 3)
-            {
-                text["D_Name4"] = detailItems[3].Name;
-                text["D_Price4"] = detailItems[3].Price.ToString("F2");
-                text["D_Num4"] = detailItems[3].Number.ToString();
-                text["D_Amount4"] = detailItems[3].Amount.ToString("F2");
-                text["D_TaxRate4"] = detailItems[0].TaxRate == 0 ? "*" : string.Format("{0:F0}%", detailItems[3].TaxRate * 100);
-                text["D_Tax4"] = detailItems[3].Tax.ToString("F2");
-            }
-            if (detailItems.Count > 4)
-            {
-                text["D_Name5"] = detailItems[4].Name;
-                text["D_Price5"] = detailItems[4].Price.ToString("F2");
-                text["D_Num5"] = detailItems[4].Number.ToString();
-                text["D_Amount5"] = detailItems[4].Amount.ToString("F2");
-                text["D_TaxRate5"] = detailItems[0].TaxRate == 0 ? "*" : string.Format("{0:F0}%", detailItems[4].TaxRate * 100);
-                text["D_Tax5"] = detailItems[4].Tax.ToString("F2");
+                text["D_Name" + i] = detailItems[i - 1].Name;
+                text["D_Price" + i] = detailItems[i - 1].Price.ToString("F2");
+                text["D_Num" + i] = detailItems[i - 1].Number.ToString();
+                text["D_Amount" + i] = detailItems[i - 1].Amount.ToString("F2");
+                text["D_TaxRate" + i] = detailItems[i - 1].TaxRate == 0 ? "*" : string.Format("{0:F0}%", detailItems[i - 1].TaxRate * 100);
+                text["D_Tax" + i] = detailItems[i - 1].Tax.ToString("F2");
             }
             text["TotalAmount"] = totalAmount.ToString("F2");
             text["TotalTax"] = totalTax.ToString("F2");

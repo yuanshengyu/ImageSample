@@ -21,12 +21,6 @@ namespace SampleMaker.Maker
             return QRCodeTool.CreateQRCode(qrcode, 4, color);
         }
 
-        protected Bitmap getInvoiceSeal(string company, string taxId)
-        {
-            Bitmap seal = SealTool.CreateInvoiceSeal(company, taxId);
-            return seal;
-        }
-
         protected string getRemark()
         {
             return getRandomChars(random.Next(8, 20));
@@ -85,22 +79,6 @@ namespace SampleMaker.Maker
             sb.Append(name).Append(" ");
             sb.Append(getRandomNumbers(4)).Append("-");
             sb.Append(getRandomNumbers(8));
-            return sb.ToString();
-        }
-
-        protected string getTaxId()
-        {
-            StringBuilder sb = new StringBuilder("91");
-            string str = getRandomChars(16);
-            sb.Append(str);
-            return sb.ToString();
-        }
-
-        protected string getSimpleTaxId()
-        {
-            StringBuilder sb = new StringBuilder("91");
-            string str = getRandomNumbers(16);
-            sb.Append(str);
             return sb.ToString();
         }
 

@@ -21,19 +21,30 @@ namespace SampleMaker.Util
         }
         public static Bitmap ZoomImage(Bitmap bitmap, double ratio)
         {
-            System.Drawing.Image sourImage = bitmap;
             int destWidth = (int)Math.Round(bitmap.Width / ratio);
             int destHeight = (int)Math.Round(bitmap.Height / ratio);
             Bitmap destBitmap = new Bitmap(destWidth, destHeight);
             Graphics g = Graphics.FromImage(destBitmap);
             g.Clear(Color.Transparent);
             //设置画布的描绘质量         
-            g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            g.DrawImage(sourImage, new Rectangle(0, 0, destWidth, destHeight), new Rectangle(0, 0, sourImage.Width, sourImage.Height), GraphicsUnit.Pixel);
+            g.CompositingQuality = CompositingQuality.HighQuality;
+            g.SmoothingMode = SmoothingMode.HighQuality;
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.DrawImage(bitmap, new Rectangle(0, 0, destWidth, destHeight), new Rectangle(0, 0, bitmap.Width, bitmap.Height), GraphicsUnit.Pixel);
             g.Dispose();
             return destBitmap;
+        }
+
+        public static Bitmap ResizeImage(Bitmap bitmap, int newW, int newH)
+        {
+            Bitmap dst = new Bitmap(newW, newH);
+            Graphics g = Graphics.FromImage(dst);
+            g.CompositingQuality = CompositingQuality.HighQuality;
+            g.SmoothingMode = SmoothingMode.HighQuality;
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.DrawImage(bitmap, new Rectangle(0, 0, newW, newH), new Rectangle(0, 0, bitmap.Width, bitmap.Height), GraphicsUnit.Pixel);
+            g.Dispose();
+            return dst;
         }
 
         public static Bitmap Rotate(Bitmap bmp, float angle, Color bkColor)
@@ -163,31 +174,6 @@ namespace SampleMaker.Util
                 }
             }
             return newBitmap;
-        }
-        #endregion
-
-        #region 拉伸图片  
-        /// <summary>  
-        /// 拉伸图片  
-        /// </summary>  
-        /// <param name="bmp">原始图片</param>  
-        /// <param name="newW">新的宽度</param>  
-        /// <param name="newH">新的高度</param>  
-        public static Bitmap ResizeImage(Bitmap bmp, int newW, int newH)
-        {
-            try
-            {
-                Bitmap bap = new Bitmap(newW, newH);
-                Graphics g = Graphics.FromImage(bap);
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                g.DrawImage(bap, new Rectangle(0, 0, newW, newH), new Rectangle(0, 0, bap.Width, bap.Height), GraphicsUnit.Pixel);
-                g.Dispose();
-                return bap;
-            }
-            catch
-            {
-                return null;
-            }
         }
         #endregion
 

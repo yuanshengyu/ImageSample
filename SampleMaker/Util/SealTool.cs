@@ -16,7 +16,7 @@ namespace SampleMaker.Util
         private const int INVOICE_SEAL_W = 400;
         private const int INVOICE_SEAL_H = 300;
 
-        public static Bitmap CreateInvoiceSeal(string company, string taxId)
+        public static Bitmap CreateInvoiceSeal(string company, string taxNo, Color color)
         {
             Bitmap bitmap = new Bitmap(INVOICE_SEAL_W, INVOICE_SEAL_H);//画图初始化
             Graphics g = Graphics.FromImage(bitmap);
@@ -24,14 +24,14 @@ namespace SampleMaker.Util
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
             int circularityWidth = 8;
-            Pen myPen = new Pen(Color.Red, circularityWidth);//设置画笔的颜色
+            Pen myPen = new Pen(color, circularityWidth);//设置画笔的颜色
             Rectangle rect = new Rectangle(circularityWidth, circularityWidth, INVOICE_SEAL_W - circularityWidth * 2, INVOICE_SEAL_H - circularityWidth * 2);
             g.DrawEllipse(myPen, rect);
 
             int a = INVOICE_SEAL_W / 2, b = INVOICE_SEAL_H / 2;
             int company_a = a - 5 - 54, company_b = b - 5 - 54 ; // 字与边线内侧距离0.5mm，文字高4.2mm
             Font companyFont = new Font("Adobe 仿宋 Std R", 40, FontStyle.Regular, GraphicsUnit.Pixel);
-            Pen textPen = new Pen(Color.Red, 1);
+            Pen textPen = new Pen(color, 1);
             var tuples = GetPositions(company.Length, company_a, company_b);
             for(int i = 0; i < company.Length; i++)
             {
@@ -43,9 +43,9 @@ namespace SampleMaker.Util
             }
             
             Font taxFont = new Font("Rockwell Condensed", 38, FontStyle.Regular, GraphicsUnit.Pixel);
-            var taxSize = g.MeasureString(taxId, taxFont);
+            var taxSize = g.MeasureString(taxNo, taxFont);
             PointF taxPoint = new PointF((INVOICE_SEAL_W - taxSize.Width) / 2, INVOICE_SEAL_H / 2 - taxSize.Height/2+2);
-            DrawText(g, taxId, taxPoint, taxFont, textPen);
+            DrawText(g, taxNo, taxPoint, taxFont, textPen);
             //g.DrawString(taxId, taxFont, new SolidBrush(Color.Red), taxPoint);
 
             Font invoiceFont = new Font("Adobe 仿宋 Std R", 40, FontStyle.Regular, GraphicsUnit.Pixel);
@@ -240,7 +240,7 @@ namespace SampleMaker.Util
             matrix.RotateAt(angle, new PointF(x, y));
             g.Transform = matrix;
             g.DrawPath(myPen, gp);
-            g.FillPath(new SolidBrush(Color.Red), gp);
+            g.FillPath(new SolidBrush(myPen.Color), gp);
             g.ResetTransform();
         }
 
@@ -256,7 +256,7 @@ namespace SampleMaker.Util
             gp.AddString(text, textFont.FontFamily, (int)textFont.Style, textFont.Size, textPoint, sf);
 
             g.DrawPath(myPen, gp);
-            g.FillPath(new SolidBrush(Color.Red), gp);
+            g.FillPath(new SolidBrush(myPen.Color), gp);
         }
 
         /// <summary>

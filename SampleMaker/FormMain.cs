@@ -63,21 +63,6 @@ namespace SampleMaker
             //var bitmap = WordTool.GetBitmap("上海南", Color.Black, font);
             //Bitmap bitmap = QRCodeTool.CreateQRCode("010572491393415088940081299896345173232157648345951266835886597081684566420484023943247082755378267424233867319862829180726275060579536369100982", 4);
             //bitmap = ImageHelper.Rotate(bitmap, -30, Color.Transparent);
-
-            Mat dst = CvInvoke.Imread("e:\\dst.png");
-            Mat src = CvInvoke.Imread("E:\\src2.png");
-            Mat mask = Mat.Ones(src.Rows, src.Cols, src.Depth, src.NumberOfChannels) * 500;
-            Point center = new Point(dst.Width / 2, dst.Height / 2);
-            Mat result1 = new Mat();
-            CvInvoke.SeamlessClone(src, dst, mask, center, result1, CloningMethod.Normal);
-            Mat result2 = new Mat();
-            CvInvoke.SeamlessClone(src, dst, mask, center, result2, CloningMethod.Mixed);
-            Mat result3 = new Mat();
-            CvInvoke.SeamlessClone(src, dst, mask, center, result3, CloningMethod.MonochromeTransfer);
-            CvInvoke.Imshow("Normal", result1);
-            CvInvoke.Imshow("Mixed", result2);
-            CvInvoke.Imshow("MonochromeTransfer", result3);
-            CvInvoke.WaitKey();
         }
 
         private void start(BaseMaker maker)
@@ -154,6 +139,14 @@ namespace SampleMaker
             else if(cbSampleType.Text == "专票")
             {
                 maker = new SpecialInvoiceMaker();
+            }
+            else if(cbSampleType.Text == "身份证-人像")
+            {
+                maker = new IdFrontMaker();
+            }
+            else if (cbSampleType.Text == "卷票")
+            {
+                maker = new JPInvoiceMaker();
             }
             if (maker != null)
             {
